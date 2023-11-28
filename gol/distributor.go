@@ -83,7 +83,7 @@ func (region *Region) update(regionCh chan<- [][]Cell, flippedCh chan<- []util.C
 			if aliveNeighbours == 3 {
 				nextCell.Alive = true
 			}
-			if nextCell != currentCell {
+			if currentCell != nextCell {
 				flipped = append(flipped, util.Cell{
 					X: x,
 					Y: y - DefaultHaloOffset + region.Start,
@@ -104,15 +104,18 @@ type World struct {
 }
 
 func (world *World) populate(c distributorChannels) {
+	flipped := []util.Cell{}
 	for y := 0; y < world.Height; y++ {
 		for x := 0; x < world.Width; x++ {
 			cell := <-c.ioInput
 			world.Field.Data[y][x] = Cell{X: x, Y: y, Alive: cell == 255}
 			if cell == 255 {
 				c.events <- CellFlipped{0, util.Cell{X: x, Y: y}}
+				flipped = append(flipped, util.Cell{X: x, Y: y})
 			}
 		}
 	}
+	//fmt.Println(len(flipped))
 }
 
 func (world *World) region(w int) Region {
@@ -149,40 +152,38 @@ func (world *World) region(w int) Region {
 
 func (world *World) update(turn int, c distributorChannels) {
 	var newFieldData [][]Cell
+	var newFlippedData []util.Cell
 
 	regionChannel := make([]chan [][]Cell, world.Threads)
-	flippedChannel := make(chan []util.Cell)
+	flippedChannel := make([]chan []util.Cell, world.Threads)
 
 	var wg sync.WaitGroup
 	wg.Add(world.Threads)
 
 	for workerID := 0; workerID < world.Threads; workerID++ {
 		regionChannel[workerID] = make(chan [][]Cell)
+		flippedChannel[workerID] = make(chan []util.Cell)
 		region := world.region(workerID)
 		go func(workerID int) {
 			defer func() {
 				close(regionChannel[workerID])
 				wg.Done()
 			}()
-			region.update(regionChannel[workerID], flippedChannel)
+			region.update(regionChannel[workerID], flippedChannel[workerID])
 		}(workerID)
 	}
 
-	go func() {
-		wg.Wait()
-		close(flippedChannel)
-	}()
-
-	for i := 0; i < world.Threads; i++ {
-		region := <-regionChannel[i]
+	for w := 0; w < world.Threads; w++ {
+		region := <-regionChannel[w]
 		newFieldData = append(newFieldData, region...)
+		flipped := <-flippedChannel[w]
+		newFlippedData = append(newFlippedData, flipped...)
 	}
 
-	flipped := <-flippedChannel
-	for f := range flipped {
+	for f := range newFlippedData {
 		c.events <- CellFlipped{
 			CompletedTurns: turn,
-			Cell:           flipped[f],
+			Cell:           newFlippedData[f],
 		}
 	}
 
