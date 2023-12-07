@@ -1,0 +1,6 @@
+name,time,range
+DoublingParallelGameOfLife/1_workers-8,0.9516941870000001,5%
+DoublingParallelGameOfLife/2_workers-8,0.7252617085,1%
+DoublingParallelGameOfLife/4_workers-8,0.6920482295000001,1%
+DoublingParallelGameOfLife/8_workers-8,0.6505393960000001,1%
+DoublingParallelGameOfLife/16_workers-8,0.6507012295000001,2%

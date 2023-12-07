@@ -1,0 +1,17 @@
+name,time,range
+IncrementalParallelGameOfLife/1_workers-8,0.947635875,3%
+IncrementalParallelGameOfLife/2_workers-8,0.7304986245,1%
+IncrementalParallelGameOfLife/3_workers-8,0.6794472085000001,20%
+IncrementalParallelGameOfLife/4_workers-8,0.7192032295,7%
+IncrementalParallelGameOfLife/5_workers-8,0.6715225835,2%
+IncrementalParallelGameOfLife/6_workers-8,0.6532191875,2%
+IncrementalParallelGameOfLife/7_workers-8,0.6545340000000001,2%
+IncrementalParallelGameOfLife/8_workers-8,0.6475278125000001,1%
+IncrementalParallelGameOfLife/9_workers-8,0.646669625,1%
+IncrementalParallelGameOfLife/10_workers-8,0.6482435835,1%
+IncrementalParallelGameOfLife/11_workers-8,0.6471638125000001,2%
+IncrementalParallelGameOfLife/12_workers-8,0.649798417,1%
+IncrementalParallelGameOfLife/13_workers-8,0.6509078540000001,1%
+IncrementalParallelGameOfLife/14_workers-8,0.6511056665,3%
+IncrementalParallelGameOfLife/15_workers-8,0.6434517500000001,2%
+IncrementalParallelGameOfLife/16_workers-8,0.6411913330000001,1%
